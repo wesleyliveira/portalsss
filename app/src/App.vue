@@ -10,7 +10,7 @@ const isLoggedIn = ref(!!localStorage.getItem('auth_token')) // Verifica se o us
     <!-- Navbar será exibida apenas se o usuário estiver logado -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light" v-if="isLoggedIn">
       <div class="container-fluid">
-        <RouterLink class="navbar-brand" to="/">MeuApp</RouterLink>
+        <RouterLink class="navbar-brand" to="/">PortalSSS</RouterLink>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
@@ -24,21 +24,7 @@ const isLoggedIn = ref(!!localStorage.getItem('auth_token')) // Verifica se o us
       </div>
     </nav>
 
-    <!-- Se não estiver logado, exibe o link para Login -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light" v-else>
-      <div class="container-fluid">
-        <RouterLink class="navbar-brand" to="/">PortalSSS</RouterLink>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav">
-            <li class="nav-item">
-            </li>
-          </ul>
-        </div>
-      </div>
-    </nav>
+
 
     <div class="container mt-4">
       <RouterView />

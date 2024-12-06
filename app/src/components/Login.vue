@@ -1,182 +1,292 @@
 <template>
-  <div class="container mt-5">
-    <div class="row justify-content-center">
-      <div class="col-md-6">
-        <div class="card">
-          <div class="card-header">Login</div>
-          <div class="card-body">
-            <!-- Exibe a mensagem de erro global -->
-            <div v-if="error" class="alert alert-danger">
-              {{ error }}
-            </div>
+  <div class="login-container">
+    <!-- Header -->
+    <header class="header">
+      <h1>	
+        PORTAL SISTEMAS | SERIN</h1>
+    </header>
 
-            <section class="login-section">
-              <form @submit.prevent="login">
-                <!-- Erro de email -->
-                <div class="form-group">
-                  <label for="email">Email</label>
-                  <input
-                    v-model="email"
-                    type="email"
-                    class="form-control"
-                    id="email"
-                    required
-                  />
-                  <div v-if="errors.email" class="text-danger mt-2">{{ errors.email }}</div>
-                </div>
-                <!-- Erro de senha -->
-                <div class="form-group">
-                  <label for="password">Senha</label>
-                  <input
-                    v-model="password"
-                    type="password"
-                    class="form-control"
-                    id="password"
-                    required
-                  />
-                  <div v-if="errors.password" class="text-danger mt-2">{{ errors.password }}</div>
-                </div>
-                <button type="submit" class="btn btn-primary mt-3">Login</button>
-              </form>
-            </section>
-          </div>
-        </div>
+    <div class="login-box">
+      <div>
+        <a href="/" class="logo-link">Bem-Vindo(a)!</a>
       </div>
+
+      <form @submit.prevent="login">
+        <!-- Campo Username -->
+        <div class="form-group">
+          <input
+            v-model="username"
+            type="text"
+            class="form-control"
+            id="username"
+            placeholder="Digite seu usuário"
+            required
+          />
+        </div>
+
+        <!-- Campo Password -->
+        <div class="form-group password-group">
+          <input
+            v-model="password"
+            :type="passwordVisible ? 'text' : 'password'"
+            class="form-control"
+            id="password"
+            placeholder="Digite sua Senha"
+            required
+          />
+          <!-- Botão para visualizar/ocultar senha -->
+          <button
+            type="button"
+            class="btn-show-password"
+            @click="togglePassword"
+          >
+            <i :class="passwordVisible ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+          </button>
+        </div>
+
+        <!-- Mensagem de erro (caso algum campo não esteja preenchido) -->
+        <div v-if="errorMessage" class="error-message">
+          <p>{{ errorMessage }}</p>
+        </div>
+
+        <!-- Checkbox Remember Me -->
+        <div class="form-group remember-me">
+          <label>
+            <input type="checkbox" v-model="rememberMe" /> Lembrar-me
+          </label>
+        </div>
+
+        <!-- Botão de Login -->
+        <button type="submit" class="btn-login">Entrar</button>
+        
+        <!-- Link Esqueceu a Senha -->
+        <div class="forgot-password-link">
+          <a href="#">Esqueceu a senha?</a>
+        </div>
+      </form>
     </div>
+
+    <!-- Rodapé -->
+    <footer class="footer">
+      <p>&copy; Copyright 2012 - 2024 - SERIN - Todos os Direitos Reservados
+        SERIN - 3ª Avenida, nº 390, Plataforma IV, 3º andar - Centro Administrativo da Bahia CEP 41.745-005 - Salvador - Bahia - Brasil</p>
+    </footer>
   </div>
 </template>
 
 <script>
-import axios from "../axios";
-import { useRouter } from "vue-router";
-
 export default {
   data() {
     return {
-      email: "",
+      username: "",
       password: "",
-      error: "", // Mensagem de erro global
-      errors: {}, // Mensagens de erro específicas para campos
+      passwordVisible: false, // Controla visibilidade da senha
+      rememberMe: false,
+      errorMessage: "", // Armazenar mensagem de erro
     };
   },
-  mounted() {
-    // Verifica se o usuário já está autenticado
-    const token = localStorage.getItem("auth_token");
-    if (token) {
-      this.$router.push("/dashboard"); // Redireciona para o dashboard se estiver autenticado
-    }
-  },
   methods: {
-    async login() {
-      // Limpa os erros anteriores
-      this.errors = {};
-      this.error = "";
+    login() {
+      // Verificação de campos vazios
+      if (!this.username || !this.password) {
+        this.errorMessage = "Por favor, preencha todos os campos."; // Mensagem de erro
+      } else {
+        this.errorMessage = ""; // Limpa a mensagem de erro
 
-      try {
-        // Chamada da API para fazer o login
-        const response = await axios.post(
-          "/login",
-          {
-            email: this.email,
-            password: this.password,
-          },
-          {
-            withCredentials: true, // Permite que os cookies sejam enviados
-          }
-        );
-        localStorage.setItem("auth_token", response.data.token);
-        this.$router.push("/dashboard"); // Redireciona para o dashboard após login
-      } catch (error) {
-        // Se a resposta do erro for de validação
-        if (error.response) {
-          if (error.response.status === 422) {
-            // Exibe os erros de validação (se houver)
-            this.errors = error.response.data.errors;
-          } else if (error.response.status === 401) {
-            this.error = "As credenciais fornecidas são inválidas.";
-          } else {
-            this.error = "Erro desconhecido. Tente novamente.";
-          }
-        } else {
-          // Caso de erro de rede ou falta de resposta da API
-          this.error = "Erro de conexão. Tente novamente mais tarde.";
-        }
+        // Lógica de login (substitua com a lógica real)
+        console.log({
+          username: this.username,
+          password: this.password,
+          rememberMe: this.rememberMe,
+        });
+
+        // Aqui você pode adicionar a lógica para enviar o formulário ao servidor, como uma requisição API
       }
+    },
+    togglePassword() {
+      // Alterna entre mostrar/ocultar senha
+      this.passwordVisible = !this.passwordVisible;
     },
   },
 };
 </script>
 
-<style scoped>
-/* Estilos para o formulário com imagem de fundo */
+<style scoped lang="scss">
+@import '@/assets/styles/variables'; 
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap'); /* Importando a fonte Poppins */
 
-/* Certifique-se de substituir a URL da imagem pelo caminho correto */
-.login-section {
+/* Fundo com imagem personalizada */
+.login-container {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-image: url('/path/to/your/image.jpg'); /* Imagem de fundo */
-  background-size: cover;
+  min-height: 100vh;
+  background-image: url('@/assets/images/background-login.png'); 
+  background-size: contain; 
+  background-repeat: no-repeat;
   background-position: center;
-  padding: 20px;
-  border-radius: 20px;
-  border: none;
-  height: 100vh; /* Para preencher toda a altura da tela */
+  color: #fff;
+  font-family: 'Poppins', sans-serif; /* Aplica a fonte Poppins */
 }
 
-/* Estilo para os campos de entrada */
-.form-group {
-  position: relative;
-  margin: 20px 0;
+/* Header */
+.header {
   width: 100%;
-}
-
-.form-group label {
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  text-align: center;
+  padding: 20px 0;
+  font-size: 1.5rem;
+  font-weight: 600;
   position: absolute;
-  top: 10px;
-  left: 10px;
-  color: #ff7070;
-  font-size: 1rem;
-  transition: all 0.3s ease;
+  top: 0;
+  left: 0;
 }
 
-.form-group input {
+/* Caixa do formulário */
+.login-box {
+  background-color: rgba(255, 255, 255, 0.788); /* Fundo branco com opacidade leve */
+  padding: 40px;
+  border-radius: 15px;
+  width: 350px;
+  text-align: center;
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.2); /* Contorno para melhorar contraste */
+  font-family: 'Poppins', sans-serif; /* Aplica a fonte Poppins */
+}
+
+/* Título logo SIS */
+.logo-link {
+  font-size: 1.5rem;
+  text-decoration: none; /* Remover sublinhado */
+  font-weight: 700; /* Peso mais grosso */
+  color: $azul-marinho;
+  font-family: 'Poppins', sans-serif; /* Aplica a fonte Poppins */
+}
+.logo-link:hover {
+  color: $azul-forte; /* Alterar a cor ao passar o mouse */
+}
+
+/* Campos do formulário */
+.form-group {
+  margin-bottom: 20px;
+  position: relative;
+}
+.form-control {
   width: 100%;
-  padding: 12px 15px;
-  border: 1px solid rgba(110, 0, 0, 0.6);
-  border-radius: 10px;
-  background-color: rgba(26, 26, 26, 0.3); /* Fundo levemente opaco */
-  color: #000000;
-  font-size: 1rem;
-  transition: all 0.3s ease;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.082);
+  color: $preto ;
+  font-size: 1.1rem; /* Fonte um pouco maior */
+  font-family: 'Poppins', sans-serif; /* Aplica a fonte Poppins */
 }
-
-.form-group input:focus {
+.form-control::placeholder {
+  color: $azul-marinho;
+  font-size: 1.1rem; /* Fonte um pouco maior */
+}
+.form-control:focus {
   outline: none;
-  border-color: #ff6f61;
-  background-color: rgba(255, 255, 255, 0.5); /* Fundo mais claro no foco */
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid $azul-marinho;
 }
 
-.form-group input:focus + label,
-.form-group input:valid + label {
-  top: -10px;
-  font-size: 0.8rem;
+/* Botão de visualizar senha */
+.password-group {
+  position: relative;
 }
-
-/* Estilo do botão de login */
-button {
-  width: 100%;
-  padding: 12px;
-  border-radius: 25px;
+.btn-show-password {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
   border: none;
-  background-color: #ff6f61;
-  color: #ffffff;
+  background: none;
+  color: $azul-marinho;
+  cursor: pointer;
   font-size: 1.2rem;
+  font-family: 'Poppins', sans-serif; /* Aplica a fonte Poppins */
+}
+.btn-show-password:hover {
+  color: $azul-marinho;
+}
+
+/* Botão de Login */
+.btn-login {
+  width: 100%;
+  padding: 05px 15px;
+  border: none;
+  border-radius: 25px;
+  background-color: $azul-marinho;
+  color: $branco;
+  font-size: 1.2rem;
+  font-weight: 700; /* Peso mais grosso */
   cursor: pointer;
   transition: all 0.3s ease;
+  font-family: 'Poppins', sans-serif; /* Aplica a fonte Poppins */
+}
+.btn-login:hover {
+  background-color: $azul-forte;
 }
 
-button:hover {
-  background-color: #ff5a47;
+/* Checkbox Remember Me */
+.remember-me {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  font-size: 0.9rem;
+  color: $azul-marinho;
+  font-family: 'Poppins', sans-serif; /* Aplica a fonte Poppins */
 }
+.remember-me input {
+  margin-right: 5px;
+}
+
+/* Link Esqueceu a senha */
+.forgot-password-link {
+  margin-top: 20px;
+  font-size: 1.1rem; /* Fonte um pouco maior */
+  font-family: 'Poppins', sans-serif; /* Aplica a fonte Poppins */
+}
+.forgot-password-link a {
+  color: $azul-marinho;
+  text-decoration: none;
+}
+.forgot-password-link a:hover {
+  color: $azul-forte; /* Troca a cor ao passar o mouse */
+}
+.forgot-password-link a:focus {
+  outline: none;
+}
+
+/* Estilo para a mensagem de erro */
+.error-message {
+  color: red;
+  font-size: 1rem;
+  margin-top: 10px;
+}
+/* Estilo do Rodapé */
+.footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  padding: 10px;
+  font-size: 0.9rem;
+  font-family: 'Poppins', sans-serif; /* Aplica a fonte Poppins */
+}
+
+.footer a {
+  color: #fff;
+  text-decoration: none;
+  margin-left: 5px;
+}
+.footer a:hover {
+  color: #ff5733;
+}
+
 </style>
