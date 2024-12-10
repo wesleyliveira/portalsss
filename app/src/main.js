@@ -22,6 +22,9 @@ const router = createRouter({
 // Interceptor para verificação de autenticação
 router.beforeEach((to, from, next) => {
   const token = localStorage.getItem('auth_token');
+
+  document.body.style.overflow = "hidden"; // Desabilita o scroll da página
+
   
   // Se o usuário não estiver autenticado e tentar acessar o dashboard, redireciona para o login
   if (to.matched.some(record => record.meta.requiresAuth)) {
